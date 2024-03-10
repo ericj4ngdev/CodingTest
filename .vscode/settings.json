@@ -1,0 +1,9 @@
+{
+    "cmake.configureOnOpen": false,
+    "terminal.integrated.automationProfile.windows": {
+
+    },
+    "C_Cpp.default.includePath": [
+        "C:\\mingw64\\include"
+    ]
+}
