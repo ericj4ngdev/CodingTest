@@ -1,29 +1,51 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-string a, b;
+int n, m, x, y, test, cnt, ret;
+int a[101][101], visited[101][101];
+const int dy[4] = {-1, 0, 1, 0};
+const int dx[4] = {0, 1, 0, -1};
 
-string Add(string a, string b)
+void dfs(int y, int x)
 {
-    int sum = 0;
-    string ret;
-    while(a.size()||b.size()||sum){
-        if(a.size()){
-            sum += a.back() - '0';            
-            a.pop_back();
+    visited[y][x] = 1;
+    for(int i = 0; i < 4; i++)
+    {
+        int ny = y + dy[i];
+        int nx = x + dx[i];
+
+        // 외부 = pass
+        if((ny > n || nx > m || nx <= 0 || ny <= 0)) continue;
+        // 이미 방문했으면 pass
+        // if(visited[ny][nx])
+
+        // 색칠 공간 && 미방문 -> 개수 체크 
+        if(a[ny][nx] == 1 && !visited[ny][nx])
+        {
+            dfs(ny,nx);
+            cnt++;
         }
-        if(b.size()){
-            sum += b.back() - '0';
-            b.pop_back();
-        }
-        ret += (sum % 10) + '0';
-        sum /= 10;        
     }
-    reverse(ret.begin(), ret.end());      // 이거 까먹지 않기
-    return ret;
 }
 
-int main(){
-    cin >> a >> b;
-    cout << Add(a, b);
+int main()
+{
+    scanf("%d", &test);
+    scanf("%d %d %d", &n, &m, &cnt);
+    
+    while(test--)
+    {
+        fill(a, a + 50 * 50, 0);
+        cnt = 0;
+        for(int i = 0; i < cnt; i++)
+        {
+            cin >> x >> y;
+            a[y][x] = 1;
+        }
+
+        dfs(0,0);
+        cout << cnt << '\n';
+    }
+    
+    return 0;
 }

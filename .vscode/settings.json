@@ -5,5 +5,12 @@
     },
     "C_Cpp.default.includePath": [
         "C:\\mingw64\\include"
-    ]
+    ],
+    "files.associations": {
+        "utility": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "vector": "cpp",
+        "xutility": "cpp"
+    }
 }
