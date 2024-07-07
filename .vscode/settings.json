@@ -11,6 +11,8 @@
         "queue": "cpp",
         "stack": "cpp",
         "vector": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "iostream": "cpp",
+        "cstdlib": "cpp"
     }
 }

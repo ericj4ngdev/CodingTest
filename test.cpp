@@ -1,51 +1,74 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, m, x, y, test, cnt, ret;
-int a[101][101], visited[101][101];
-const int dy[4] = {-1, 0, 1, 0};
-const int dx[4] = {0, 1, 0, -1};
+int n, m, ret = 987654321;
+const int MAX = 54;
+int a[MAX][MAX];
+vector<vector<int>> ChickenList;
+vector<pair<int,int>> house, chicken;
 
-void dfs(int y, int x)
+int GetCityChickenDistance(vector<int>& chickenIdx)
 {
-    visited[y][x] = 1;
-    for(int i = 0; i < 4; i++)
-    {
-        int ny = y + dy[i];
-        int nx = x + dx[i];
+	int CityChickenDistance = 0;
+    int distance = 0;
+    
+	for(int i = 0; i < house.size(); i++)
+	{
+        // 여기서 문제 
+	    int minDistance = 987654321;
+		for(int idx : chickenIdx)
+		{
+			distance = abs(house[i].first - chicken[idx].first) + abs(house[i].second - chicken[idx].second);
+			minDistance = min(minDistance, distance);
+		}
+		CityChickenDistance += minDistance;
+	}
 
-        // 외부 = pass
-        if((ny > n || nx > m || nx <= 0 || ny <= 0)) continue;
-        // 이미 방문했으면 pass
-        // if(visited[ny][nx])
+	return CityChickenDistance;
+}
 
-        // 색칠 공간 && 미방문 -> 개수 체크 
-        if(a[ny][nx] == 1 && !visited[ny][nx])
-        {
-            dfs(ny,nx);
-            cnt++;
-        }
-    }
+void Combi(int start, vector<int> v)
+{
+	if(v.size() == m)
+	{
+		// 인덱스 조합 추가
+		ChickenList.push_back(v);
+		return;
+	}
+
+	for(int i = start + 1; i < chicken.size(); i++)
+	{
+		// 인덱스 추가
+		v.push_back(i);
+		// 재귀
+		Combi(i, v);
+		v.pop_back();
+	}
+	return;
 }
 
 int main()
-{
-    scanf("%d", &test);
-    scanf("%d %d %d", &n, &m, &cnt);
-    
-    while(test--)
-    {
-        fill(a, a + 50 * 50, 0);
-        cnt = 0;
-        for(int i = 0; i < cnt; i++)
-        {
-            cin >> x >> y;
-            a[y][x] = 1;
-        }
+{	
+	cin >> n >> m;
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < n; j++)
+		{
+			cin >> a[i][j];
+			if(a[i][j] == 1) house.push_back({i,j});
+			if(a[i][j] == 2) chicken.push_back({i,j});
+		}
+	}
+	vector<int> v;
+	Combi(-1, v);
 
-        dfs(0,0);
-        cout << cnt << '\n';
-    }
-    
-    return 0;
+
+	for(vector<int> chList : ChickenList)
+	{
+		ret = min(ret, GetCityChickenDistance(chList));
+	}
+
+	cout << ret;
+
+	return 0;
 }
