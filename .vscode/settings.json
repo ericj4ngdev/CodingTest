@@ -13,6 +13,11 @@
         "vector": "cpp",
         "xutility": "cpp",
         "iostream": "cpp",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "deque": "cpp",
+        "format": "cpp",
+        "list": "cpp",
+        "xstring": "cpp",
+        "xiosbase": "cpp"
     }
 }
