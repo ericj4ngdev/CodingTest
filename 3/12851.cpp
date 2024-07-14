@@ -1,10 +1,9 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-int n, k, cnt, ret;
-// cnt = 최단시간
+int n, k;
 // ret = 방법 수 
-int a[1000001];
+int visited[1000001], cnt[1000001];
 
 int main()
 {   
@@ -13,13 +12,14 @@ int main()
     // 같은 경우
     if(n == k) 
     {
-        cout << 0 << "\n" << 0;
+        cout << 0 << "\n" << 1;
         return 0;
     }
     
+    visited[n] = 1; 
+    cnt[n] = 1;
     queue<int> q;
     q.push(n);
-    a[n] = 1;
 
     while(q.size())
     {
@@ -30,23 +30,23 @@ int main()
         for(int nx : {x-1, x+1, x*2})
         {
             // 범위 밖
-            if(nx < 0 || nx >= 100000) continue;            
-            // 방문한 적 O
-            if(a[nx]) continue;
-            a[nx] = a[x] + 1;
-            q.push(nx);
-
-            if(nx == k) 
+            if(nx < 0 || nx > 100000) continue;   
+            // 방문한 적 X
+            if(!visited[nx])
             {
-                ret++;
-                cnt = min(cnt, (int)q.size());
-                continue;
+                q.push(nx);
+                visited[nx] = visited[x] + 1;
+                cnt[nx] += cnt[x];
             }
-        }
-        
+            else if(visited[nx] == visited[x] + 1)
+            {
+                cnt[nx] += cnt[x];
+            }
+        }        
     }
 
-    cout << cnt << '\n' << ret;
+    cout << visited[k] - 1 << '\n';
+    cout << cnt[k];
 
     return 0;
 }
