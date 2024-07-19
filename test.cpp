@@ -1,83 +1,84 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-const int SIZE = 54;
-int n, l, r, ret, sum;
+const int SIZE = 104;
+int m, n, k, space;
 int a[SIZE][SIZE];
 int visited[SIZE][SIZE];
-vector<pair<int, int>> v;
+
+struct Rect
+{
+public:
+    pair<int, int> LeftDown;
+    pair<int, int> RightTop;    
+};
+vector<int> rects;
+
 int dx[] = {-1,0,1,0};
 int dy[] = {0,1,0,-1};
 
 void dfs(int y, int x)
 {
+    visited[y][x] = 1;
+    
     for(int i = 0; i < 4; i++)
     {
         int nx = x + dx[i];
         int ny = y + dy[i];
-        if(ny < 0 || ny >= n || nx < 0 || nx >= n) continue;
-        // 연합국인가? 
-        if(visited[ny][nx]) continue;
-        int gap = abs(a[ny][nx] - a[y][x]);
-        if(gap >= l && gap <= r)
+        if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+        // 사각형 없는 곳이라면
+        if(!visited[ny][nx] && a[ny][nx] != 1)
         {
-            visited[ny][nx] = 1;
-            sum += a[ny][nx];
-            v.push_back({ny,nx});
-            dfs(ny,nx);
+            space++;        // 면적 증가
+            dfs(ny, nx);
         }
     }
     return;
 }
 
+// 들어온 좌표로 배열 a에 표시.
+void Draw(pair<int, int> LD, pair<int, int> RT)
+{
+    for(int i = m - RT.second; i <= m - 1 - LD.second; i++)
+    {
+        for(int j = LD.first; j <= RT.first - 1; j++)
+        {
+            a[i][j] = 1;
+        }
+    }
+}
+
 int main()
 {
-    cin >> n >> l >> r;
+    cin >> m >> n >> k;
+    Rect rect;
+    for(int i = 0; i < k; i++)
+    {
+        cin >> rect.LeftDown.first >> rect.LeftDown.second >> rect.RightTop.first >> rect.RightTop.second;
+        Draw({rect.LeftDown.first, rect.LeftDown.second}, {rect.RightTop.first, rect.RightTop.second});
+    }
 
-
-    for(int i = 0; i < n; i++)
+    int cnt = 0;
+    for(int i = 0; i < m; i++)
     {
         for(int j = 0; j < n; j++)
         {
-            cin >> a[i][j];
-        }
-    }
-    // 인구 수 차이
-
-    // dfs로 연결 컴포 계산 = 연합국 여부
-    // visited = 너 연합국
-
-    while(true)
-    {
-        bool flag = 0;
-        memset(visited,0,sizeof(visited));
-
-        for(int i = 0; i < n; i++)
-        {
-            for(int j = 0; j < n; j++)
+            // 덩어리 개수
+            if(!visited[i][j] && a[i][j] == 0)
             {
-                // 연합국인 적이 없다면
-                if(!visited[i][j])
-                {
-                    // 초기화
-                    sum = 0;
-                    v.clear();
-                    dfs(i,j);
-                    // 연합국이 없다면 패스
-                    if(v.size() == 0) continue;
-                    for(pair<int, int> pos : v)
-                    {   
-                        a[pos.first][pos.second] = sum / v.size();
-                        flag = 1;
-                    }
-                }
-            }   
+                space = 1;      // 방문할 거리가 생겼으니 1로 초기화
+                dfs(i,j);
+                rects.push_back(space);
+                cnt++;
+            }            
         }
-        // 연합국 없음. 더이상 인구 이동 X
-        if(!flag) break;
-        ret++;
     }
-    cout << ret;
+    cout << cnt << '\n';
+    sort(rects.begin(), rects.end());
+    for(int i = 0; i < cnt; i++)
+    {
+        cout << rects[i] << " ";
+    }    
     return 0;
 }
 

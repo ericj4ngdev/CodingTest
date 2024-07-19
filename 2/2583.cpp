@@ -1,79 +1,83 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-#define y1 aaaa 
+const int SIZE = 104;
+int m, n, k, space;
+int a[SIZE][SIZE];
+int visited[SIZE][SIZE];
 
-int n, m, k, ret;
-int x, y, nx, ny, x1, y1, x2, y2;
-int dy[4] = { -1, 0 , 1, 0 };
-int dx[4] = { 0, 1, 0, -1 };
-int a[104][104], visited[101][101];
-vector<int> v;
-int wide;
+struct Rect
+{
+public:
+    pair<int, int> LeftDown;
+    pair<int, int> RightTop;    
+};
+vector<int> rects;
+
+int dx[] = {-1,0,1,0};
+int dy[] = {0,1,0,-1};
 
 void dfs(int y, int x)
 {
     visited[y][x] = 1;
-    wide++;     // 넓이
-    for (int i = 0; i < 4; i++)
+    
+    for(int i = 0; i < 4; i++)
     {
-        ny = y + dy[i];
-        nx = x + dx[i];
-        if (nx < 0 || ny < 0 || nx >= m || ny >= n) continue;
-        // 도달 가능 && 미방문
-        if (!visited[ny][nx] && a[ny][nx] == 2)
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+        // 사각형 없는 곳이라면
+        if(!visited[ny][nx] && a[ny][nx] != 1)
         {
+            space++;        // 면적 증가
             dfs(ny, nx);
+        }
+    }
+    return;
+}
+
+// 들어온 좌표로 배열 a에 표시.
+void Draw(pair<int, int> LD, pair<int, int> RT)
+{
+    for(int i = m - RT.second; i <= m - 1 - LD.second; i++)
+    {
+        for(int j = LD.first; j <= RT.first - 1; j++)
+        {
+            a[i][j] = 1;
         }
     }
 }
 
-// 1 : 사각형
-// 2 : 빈 공간
-
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
-    cin >> n >> m >> k;
-
-    fill(&a, &a + n * m, 2);
-
-    for (int i = 0; i < k; i++)
+    cin >> m >> n >> k;
+    Rect rect;
+    for(int i = 0; i < k; i++)
     {
-        cin >> x1 >> y1 >> x2 >> y2;
-        // 사각형 색칠
-        for (int i = n - y2; i <= n - y1; i++)
+        cin >> rect.LeftDown.first >> rect.LeftDown.second >> rect.RightTop.first >> rect.RightTop.second;
+        Draw({rect.LeftDown.first, rect.LeftDown.second}, {rect.RightTop.first, rect.RightTop.second});
+    }
+
+    int cnt = 0;
+    for(int i = 0; i < m; i++)
+    {
+        for(int j = 0; j < n; j++)
         {
-            for (int j = x1; j <= x2 - 1; j++)
+            // 덩어리 개수
+            if(!visited[i][j] && a[i][j] == 0)
             {
-                if (a[i][j] == 1) continue;
-                a[i][j] = 1;
-            }
+                space = 1;      // 방문할 거리가 생겼으니 1로 초기화
+                dfs(i,j);
+                rects.push_back(space);
+                cnt++;
+            }            
         }
     }
-
-    for (int i = 0; i < n; i++)
+    cout << cnt << '\n';
+    sort(rects.begin(), rects.end());
+    for(int i = 0; i < cnt; i++)
     {
-        for (int j = 0; j < m; j++)
-        {
-            if (!visited[i][j] && a[i][j] == 2)
-            {
-                ret++;
-                dfs(i, j);
-                v.push_back(wide);
-                wide = 0;
-            }
-        }
-    }
-    cout << ret;
-    cout << '\n';
-    
-    for (int i = 0; i < v.size(); i++)
-    {
-        cout << v[i] << " ";
-    }
-    
+        cout << rects[i] << " ";
+    }    
     return 0;
 }
