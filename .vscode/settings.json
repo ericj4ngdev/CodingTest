@@ -19,6 +19,7 @@
         "list": "cpp",
         "xstring": "cpp",
         "xiosbase": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "algorithm": "cpp"
     }
 }
