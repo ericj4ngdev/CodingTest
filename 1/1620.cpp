@@ -1,35 +1,45 @@
-#include<bits/stdc++.h>
+#include <cctype>
+#include <string>
+#include <map>
+#include <algorithm>
+#include <iostream>
 using namespace std;
 
-string s, a[100004];
+string name;
+int num;
+int inputN, inputM;
 map<string, int> mp;
-int n, m;
+string pokemon[100001];
 
 int main()
 {
-    ios_base::sync_with_stdio(0);
-    cin.tie(NULL);
-    cout.tie(NULL);
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
 
-    cin >> n >> m;
+    cin >> inputN >> inputM;
 
-    for(int i = 0; i < n; i++)
+    for (int i = 1; i <= inputN; i++)
     {
-        cin >> s;
-        mp[s] = i + 1;
-        a[i+1] = s;
+        cin >> pokemon[i];
+        mp[pokemon[i]] = i;
     }
 
-    for(int i = 0; i < m; i++)
+    for (int i = 0; i < inputM; i++)
     {
-        cin >> s;
-        if(atoi(s.c_str()) == 0)
+        cin >> name;
+        // 숫자이면 숫자로
+        if (isdigit(name[0]) != 0)
         {
-            cout << mp[s] << '\n';
+            num = stoi(name);
+            cout << pokemon[num] << "\n";
         }
         else
         {
-            cout << a[atoi(s.c_str())] << '\n';
+            // 문자
+            cout << mp[name] << "\n";
+            // auto ret = mp.find(name);
+            // cout << ret->second << "\n";
         }
     }
 
