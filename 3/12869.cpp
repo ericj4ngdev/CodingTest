@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-int damage[6][3] = 
+const int damage[6][3] = 
 {
     {9,3,1},
     {9,1,3},
@@ -19,6 +19,9 @@ struct A{
 };
 
 queue<A> q;
+string str;
+vector<int> v;
+map<int, int> mp;
 
 int solve(int a, int b, int c)
 {    

@@ -58,6 +58,7 @@ void Input()
     }
 }
 
+
 void Combi(int start, vector<int> b)
 {
     if(b.size() == m) 
@@ -75,6 +76,7 @@ void Combi(int start, vector<int> b)
     }
     return;
 }
+
 
 int main()
 {
@@ -97,3 +99,4 @@ int main()
     cout << ret;
     return 0;
 }
+
