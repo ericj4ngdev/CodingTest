@@ -26,6 +26,6 @@ int main()
             ret *= (i.second + 1);
         }
 
-        cout << ret - 1;
+        cout << ret - 1 << '\n';
     }
 }
