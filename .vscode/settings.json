@@ -68,6 +68,9 @@
         "numeric": "cpp",
         "array": "cpp",
         "ranges": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "optional": "cpp",
+        "regex": "cpp",
+        "sstream": "cpp"
     }
 }
