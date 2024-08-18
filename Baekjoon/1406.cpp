@@ -1,50 +1,70 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+#include<list>
 using namespace std;
 
-string input;
-int location;
-struct Command
+void PrintList(list<char>& L)
 {
-    char cmd;
-    char c;
-};
-
-void execute(Command command)
-{
-    if(command.cmd == 'L')
+    for(char c : L)
     {
-        if(location == 0) return;
-        location--;
+        cout << c;
     }
+    cout << '\n';
 }
 
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-
-    int m = 0;
+    list<char> memo;
+    auto iter = memo.end();
+    string input;
     cin >> input;
-    cin >> m;
-    location = input.size();
-    cout << location;
 
-    Command command;
-    for(int i = 0; i < m; i++)
+    for(char c : input)
     {
-        cin >> command.cmd;
-        if(command.cmd == 'P')
+        memo.push_back(c);
+    }    
+
+    int CommandCount = 0;
+    cin >> CommandCount;
+
+    for(int i = 0; i < CommandCount; i++)
+    {
+        char Command;
+        cin >> Command;
+        if(Command == 'P')
         {
-            cin >> command.c;
+            char _char;
+            cin >> _char;    
+            // memo.push_back(_char);
+            iter = memo.insert(iter, _char);
+            iter++;
         }
-        execute(command);
+        else if(Command == 'L')
+        {
+            if(iter == memo.begin()) continue;
+            else iter--;
+        }
+        else if(Command == 'D')
+        {
+            if(iter == memo.end()) continue;
+            else iter++;
+        }
+        else if(Command == 'B')
+        {
+            if(iter == memo.begin()) continue;
+            else 
+            {
+                iter--;
+                iter = memo.erase(iter);
+            }
+        }
+        // cout << i << " : ";
+        // PrintList(memo);
     }
-    
 
-
-
-
+    PrintList(memo);
 
     return 0;
 }

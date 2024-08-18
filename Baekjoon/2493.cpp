@@ -1,79 +1,62 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<stack>
 using namespace std;
 
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-    int numTower = 0;
-    cin >> numTower;
-
-    stack<int> stk;
+    stack<pair<int,int>> st;
     vector<int> vec;
-    vector<int> ans;
-    // 가장 높은 타워 인덱스
-    int idx = 0;
-    // 가장 높은 타워 높이
-    int maxVal = 0;
-    // maxval의 idx로 수정
-    for (int i = 0; i < numTower; i++)
+    int TowerCount;
+    cin >> TowerCount;
+    for(int i = 1; i <= TowerCount; i++)
     {
-        int k;
-        cin >> k;
-        vec.push_back(k);
-        // 1번째는 무조건 0 출력
-        if(i == 0) 
+        int height;
+        cin >> height;
+        if(i == 1)
         {
-            maxVal = k;
-            stk.push(k);
-            ans.push_back(0);
+            st.push({i,height});
+            vec.push_back(0);
             continue;
         }
-        // 부딪힌 타워 max값
-        // 인덱스 저장
-        
-        // 7 >= 5
-        if(stk.top() >= k)
+
+        // 본인 인덱스 앞에 있는 타워 ~ Max 타워 사이 부딪히는 타워 찾기
+        // 하지만 이것도 비효율적이다.     
+        // 스택을 쓰면 검사할 타워 수가 줄어든다. 
+        while(true)
         {
-            // top과 max 사이 값들과 비교
-            for(int j = i - 1; j > idx; j--)
+            if(st.size())
             {
-                // 
-                if(vec[j] >= k)
+                if(st.top().second < height)
                 {
-                    // 수신
-                    ans.push_back(j);
-                    j = idx;
+                    // 직전 타워가 (자기보다) 작다
+                    st.pop();
+                    // 아직 수신 못찾음. 찾을 때까지 while 반복
+                }
+                else
+                {
+                    // 직전 타워가 (자기보다) 크거나 같으면 직전 타워 수신
+                    vec.push_back(st.top().first);
+                    // 넣긴 넣는다. 왜냐면 다음 타워가 더 작을 수도 있기 때문
+                    st.push({i,height});
+                    break;
                 }
             }
-            // 같은 높이일 경우 수신
-            // top에 수신. 기존꺼 그대로 
-            ans.push_back(i);
-            // top과 max 사이와 비교하기
-
-        }
-        else
-        {         
-            if(maxVal < k)
-            {
-                maxVal = k;                
-                ans.push_back(0);   // 가장 큰 수이므로 수신탑 X
-                idx = i + 1;
-            }
             else
-            {                
-                ans.push_back(idx);
-            }
+            {
+                // 가장 큰 타워라 스택에 없으면
+                st.push({i,height});
+                vec.push_back(0);
+                break;
+            }            
         }
-
-        stk.push(k);
     }
 
-    for(int it : ans)
+    for(int i : vec)
     {
-        cout << it << " ";
-    }
-    
+        cout << i << " ";
+    }    
     return 0;
 }
+

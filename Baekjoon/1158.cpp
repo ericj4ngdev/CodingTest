@@ -1,53 +1,59 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include <queue>
 using namespace std;
 
-void printList(list<int>& l)
+void PrintVector(vector<int>& v)
 {
-    for(int it : l)
+    cout << '<';
+    for(int i = 0; i < v.size(); i++)
     {
-        cout << it << " ";
+        if(i == v.size() - 1)
+        {
+            cout << v[i];
+        }
+        else
+        {
+            cout << v[i] << ", ";
+        }
     }
-    cout << endl;
+    cout << '>';
+    cout << '\n';
 }
 
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-    int n = 0;
-    int k = 0;
-    cin >> n >> k;
+    queue<int> q;
+    vector<int> vec;
 
-    list<int> L;
+    int n = 0, k = 0;
+    cin >> n >> k;
+    // 처음엔 다 담는다.
     for(int i = 1; i <= n; i++)
     {
-        L.push_back(i);
+        q.push(i);   
     }
-    printList(L);
 
-    auto it = L.begin();
-    while(L.size())
+    // 맨 앞에거 빼서 뒤에 넣고
+    // k번째에 pop만 한다. 
+    int cnt = 1;
+    while(q.size())
     {
-        for(int i = 0; i < k - 1; i++)
+        if(cnt == k)
         {
-            cout << "before cur : " << *it << '\n';
-            if(*it == L.back()) 
-            {
-                it = L.begin();
-                cout << "after cur : " << *it << '\n';                
-                continue;
-            }
-            it++;
-            cout << "after cur : " << *it << '\n';
+            vec.push_back(q.front());
+            q.pop();
+            cnt = 1;
+            // PrintVector(vec);
+            continue;
         }
-        cout << "erase : " << *it << '\n';
-        it = L.erase(it);
-        cout << "cur after erase : " << *it << '\n';
-        
-        // it++;
-        printList(L);
+        q.push(q.front());
+        q.pop();
+        cnt++;
     }
 
+    PrintVector(vec);
+    
     return 0;
 }
+

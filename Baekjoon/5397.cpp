@@ -1,12 +1,13 @@
-#include<algorithm>
 #include<iostream>
-#include<list>
 #include<vector>
+#include<string>
+#include<algorithm>
+#include<list>
 using namespace std;
 
-void printList(list<char>& pw)
+void PrintList(list<char>& L)
 {
-    for (char c : pw)
+    for(char c : L)
     {
         cout << c;
     }
@@ -15,44 +16,48 @@ void printList(list<char>& pw)
 
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-
-
     int testcase = 0;
-    cin >> testcase;
+    cin >> testcase;    
 
-    while (testcase--)
+    while(testcase--)
     {
+        string log;
+        cin >> log;
         list<char> pw;
-        auto curpos = pw.end();
-        string keylog;
-        cin >> keylog;
-        for (char c : keylog)
-        {
-            switch (c)
+        auto iter = pw.end();
+        for(char key : log)
+        {        
+            if(key == '<')
             {
-            case '<':
-                if (curpos != pw.begin()) curpos--;
-                break;
-            case '>':
-                if (curpos != pw.end()) curpos++;
-                break;
-            case '-':
-                if (curpos != pw.begin())
+                if(iter == pw.begin()) continue;
+                else
                 {
-                    curpos--;
-                    curpos = pw.erase(curpos);
+                    iter--;
                 }
-                break;
-            default:
-                pw.insert(curpos, c);
-                break;
             }
-            // printList(pw);
+            else if(key == '>')
+            {
+                if(iter == pw.end()) continue;
+                else
+                {
+                    iter++;
+                }
+            }
+            else if(key == '-')
+            {
+                if(iter == pw.begin()) continue;
+                else
+                {
+                    iter--;
+                    iter = pw.erase(iter);
+                }
+            }
+            else
+            {
+                pw.insert(iter,key);
+            }
         }
-        printList(pw);
+        PrintList(pw);
     }
 
     return 0;
