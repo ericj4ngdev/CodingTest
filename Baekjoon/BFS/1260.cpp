@@ -2,7 +2,7 @@
 using namespace std;
 
 int node, edge, start;
-vector<pair<int, int>> edges;
+vector<pair<int, int>> graph;
 map<int, vector<int>> nodes;
 bool visited[1001];
 
