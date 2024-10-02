@@ -1,0 +1,15 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+
+    int time_, pay;
+
+    // 마지막 날 
+
+    return 0;
+}

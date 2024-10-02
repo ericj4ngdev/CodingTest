@@ -24,7 +24,7 @@ void dfs(int x, int y)
         {
             dfs(nx,ny);
         }        
-    }    
+    }
 }
 
 void bfs(int xx, int yy)
