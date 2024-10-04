@@ -42,7 +42,7 @@ int main()
             }
         }    
     }
-    
+
     cout << *max_element(dp.begin(), dp.end());
     return 0;
 }
