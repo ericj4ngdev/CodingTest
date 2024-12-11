@@ -1,55 +1,50 @@
-#include<iostream>
-#include<vector>
-#include<queue>
+#include<bits/stdc++.h>
 using namespace std;
 
-const int SIZE = 100'004;
-vector<int> adj[SIZE];
-int p[SIZE];
+int d[101][100001];
+int n, weight, value, k;
+vector<pair<int, int>> item;
 
-void bfs(int root)
+void dp()
 {
-    // 노드담는 큐
-    queue<int> q;
-    q.push(root);
-    while (q.size())
+    for(int limit = 1; limit <= k; limit++)
     {
-        int cur = q.front();
-        q.pop();
-        // 시작이 root노드라 rootnode -> 자식순으로 순회        
-        // cur에 인접한 노드 순회
-        for (int nx : adj[cur])
+        for(int row = 1; row <= n; row++)
         {
-            // cur의 부모이면 pass
-            if (p[cur] == nx) continue;
-            // 큐에 nx넣기
-            q.push(nx);
-            // nx의 부모를 cur로 지정
-            p[nx] = cur;
+            if(item[row].first > limit)
+                d[row][limit] = d[row-1][limit];
+            else
+                d[row][limit] = max(d[row-1][limit - item[row].first] + item[row].second, d[row-1][limit]);
         }
     }
 }
 
 int main()
 {
-    int n;
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
 
-    cin >> n;
-    for (int i = 1; i <= n - 1 ; i++)
+    cin >> n >> k;
+    item.push_back({0, 0}); // Dummy item
+    for(int i = 0; i < n; ++i)
     {
-        int lc, rc;
-        cin >> lc >> rc;
-        adj[lc].push_back(rc);
-        adj[rc].push_back(lc);
+        cin >> weight >> value;
+        item.push_back({weight, value});
     }
 
-    bfs(1);
-
-    for (int i = 2; i <= n; i++)
+    //초기화
+    for(int r=0; r<=n; r++)
     {
-        cout << p[i] << '\n';
+        d[r][0] = 0;
+    }
+    for(int c = 0; c<=k; c++){
+        d[0][c] = 0;
     }
 
+    dp();
+
+    cout << d[n][k];
 
     return 0;
 }
