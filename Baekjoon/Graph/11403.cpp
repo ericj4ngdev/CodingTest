@@ -1,32 +1,68 @@
-// 경로 탐색
-#include<iostream>
-#include<vector>
-#include<cstring>
+#include<bits/stdc++.h>
 using namespace std;
-vector<int>v[100];
-int visit[100];
-void dfs(int x){
-    for(int i=0;i<v[x].size();i++){
-        if(!visit[v[x][i]]){
-            visit[v[x][i]]=1;
-            dfs(v[x][i]);
+
+#define SIZE 100
+int visited[SIZE];
+
+void bfs(vector<int>& connect, vector<vector<int>>& graph, int start)
+{
+    queue<int> q;
+    q.push(start);
+
+    while (q.size())
+    {
+        int cur = q.front();
+        
+        q.pop();
+        for (int item : graph[cur])
+        {
+            if (visited[item]) continue;
+            visited[item] = 1;
+            // 연결성 표시
+            connect[item] = 1;
+            q.push(item);
         }
     }
 }
-int main(){
-    int n,a;
-    cin>>n;
-    for(int i=0;i<n;i++){
-        for(int j=0;j<n;j++){
-            cin>>a;
-            if(a)v[i].push_back(j);
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+
+    int n;
+    cin >> n;
+
+    vector<vector<int>> graph(n + 1);
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            int temp;
+            cin >> temp;
+            // graph[i][j] = temp;
+            if (temp == 1)
+            {
+                graph[i].push_back(j);
+            }
         }
     }
-    for(int i=0;i<n;i++){
-        memset(visit,0,sizeof(visit));
-        dfs(i);
-        for(int j=0;j<n;j++)
-            cout<<visit[j]<<" ";
-        cout<<"\n";
+
+    cout << '\n';
+
+    for (int i = 0; i < n; i++)
+    {
+        vector<int> answer(n, 0);
+        memset(visited, 0, sizeof(visited));
+        bfs(answer, graph, i);
+        for (int item : answer)
+        {
+            cout << item << " ";
+        }
+        cout << '\n';
     }
+
+    return 0;
 }

@@ -1,20 +1,26 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-int d[101][100001];
-int n, weight, value, k;
-vector<pair<int, int>> item;
+#define SIZE 100
+int visited[SIZE];
 
-void dp()
+void bfs(vector<int>& connect, vector<vector<int>>& graph, int start)
 {
-    for(int limit = 1; limit <= k; limit++)
+    queue<int> q;
+    q.push(start);
+
+    while (q.size())
     {
-        for(int row = 1; row <= n; row++)
+        int cur = q.front();
+        
+        q.pop();
+        for (int item : graph[cur])
         {
-            if(item[row].first > limit)
-                d[row][limit] = d[row-1][limit];
-            else
-                d[row][limit] = max(d[row-1][limit - item[row].first] + item[row].second, d[row-1][limit]);
+            if (visited[item]) continue;
+            visited[item] = 1;
+            // ¿¬°á¼º Ç¥½Ã
+            connect[item] = 1;
+            q.push(item);
         }
     }
 }
@@ -25,26 +31,38 @@ int main()
     cin.tie(0);
     cout.tie(0);
 
-    cin >> n >> k;
-    item.push_back({0, 0}); // Dummy item
-    for(int i = 0; i < n; ++i)
+    int n;
+    cin >> n;
+
+    vector<vector<int>> graph(n + 1);
+
+    for (int i = 0; i < n; i++)
     {
-        cin >> weight >> value;
-        item.push_back({weight, value});
+        for (int j = 0; j < n; j++)
+        {
+            int temp;
+            cin >> temp;
+            // graph[i][j] = temp;
+            if (temp == 1)
+            {
+                graph[i].push_back(j);
+            }
+        }
     }
 
-    //ì´ˆê¸°í™”
-    for(int r=0; r<=n; r++)
+    cout << '\n';
+
+    for (int i = 0; i < n; i++)
     {
-        d[r][0] = 0;
+        vector<int> answer(n, 0);
+        memset(visited, 0, sizeof(visited));
+        bfs(answer, graph, i);
+        for (int item : answer)
+        {
+            cout << item << " ";
+        }
+        cout << '\n';
     }
-    for(int c = 0; c<=k; c++){
-        d[0][c] = 0;
-    }
-
-    dp();
-
-    cout << d[n][k];
 
     return 0;
 }
