@@ -1,22 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-int n, m;
-int knowTruthNum;
-// vector<int> knowTruth;
-set<int> knowTruth;
-vector<vector<int>> party;
-
-bool HasNum(int index)
-{
-    for(int it : knowTruth)
-    {
-        if(it == index)
-            return true;
-    }
-    return false;
-}
-
+int visited[51];
 
 int main()
 {
@@ -24,84 +9,83 @@ int main()
     cin.tie(0);
     cout.tie(0);
 
-    // n : 사람 수
-    // m : 파티 수
+    int n, m;
     cin >> n >> m;
-    // 진실을 아는 사람 수
-    cin >> knowTruthNum;
-    for(int i = 0; i < knowTruthNum; i++)
-    {
-        int temp;
-        cin >> temp;
-        cout << "temp : " << temp << '\n';
 
-        // 진실을 아는 사람 번호 저장
-        knowTruth.insert(temp);
+    int personCount, personNum = 0;
+    vector<int> knowTruth;
+    cin >> personCount;
+    for (int i = 0; i < personCount; ++i)
+    {
+        cin >> personNum;
+        knowTruth.push_back(personNum);
+    }
+    vector<vector<int>> party(m);
+    vector<vector<int>> graph(n + 1);
+    // 파티 개수만큼 입력
+    for (int i = 0; i < m; ++i)
+    {
+        // 파티내 인원 입력
+        int participants;
+        cin >> participants;
+        // 사람 번호 입력
+        for (int j = 0; j < participants; ++j)
+        {
+
+            int num;
+            cin >> num;
+            party[i].push_back(num);                                                                    // j -> i
+        }
+
+        // 해당 파티에 참여한 사람끼리 그래프 잇기
+        for (int j = 0; j < party[i].size() - 1; ++j)
+        {
+            graph[party[i][j]].push_back(party[i][j + 1]);
+            graph[party[i][j + 1]].push_back(party[i][j]);
+        }
+    }
+
+
+    // memset(visited, 0, sizeof(visited));                                                      // 괜히 함
+    // 진실을 아는 사람을 시작으로 bfs돌리기
+    for (int i = 0; i < knowTruth.size(); ++i)
+    {
+        queue<int> q;
+        q.push(knowTruth[i]);
+        visited[knowTruth[i]] = 1;
+        while (q.size())
+        {
+            int cur = q.front();
+            q.pop();
+            // 파티원 순회
+            for (int j = 0; j < graph[cur].size(); ++j)                                         // i -> j
+            {
+                if (visited[graph[cur][j]] == 1)
+                    continue;
+                visited[graph[cur][j]] = 1;
+                q.push(graph[cur][j]);
+            }
+        }
     }
 
     int count = 0;
-    for(int i = 0; i < m; i++)
+    // 파티 내 진실아는 사람이 없으면 count++
+    for (int i = 0; i < m; ++i)
     {
-        bool flag = false;
-        // 각 파티마다 오는 사람 수
-        int partyCome;
-        cin >> partyCome;
-
-        for(int j = 0; j < partyCome; j++)        
+        bool flag = true;
+        for (int j = 0; j < party[i].size(); ++j)
         {
-            // 각 파티마다 오는 사람 번호 저장
-            int num;
-            cin >> num;
-            cout << "num : " << num << '\n';
-            party[i].push_back(num);
-            // 진실 아는 사람 있는가?
-            if(HasNum(num))
+            // 한명이라도 진실을 알면 false하고 다음 파티
+            if (visited[party[i][j]] == 1)
             {
-                flag = true;
+                flag = false;
+                break;
             }
         }
-
-        if(flag)
-        {
-            // 지금 들어오는 num들은 모두 knowTruth에 추가
-            for(int it : party[i])
-            {
-                knowTruth.insert(it);
-            }
-        }
+        if (flag) count++;
     }
 
-    // 진실을 아는 사람이 적은 파티
-    // 겹치지 않게 
-    // 파티에 가면 해당 파티에 있는 사람들중 진실을 아는 사람이 있으면 진실
-    // 모두 모르면 과장 -> 그냥 패스, count++
-
-    // knowTruthNum = 0이면 진실을 아는 사람이 없으므로 무조건 과장해도 됨. 따라서 파티 개수가 답    
-    // knowTruthNum >= 1이면 진실을 아는 사람이 있는 파티에 있는 사람들은 모두 진실을 알게 됨. 
-    // 따라서 겹치지 않는 파티에만 과장 가능
-
-    for(int i = 0; i < m; i++)
-    {
-        for(int j = 0; i < m; i++)
-        {
-            for(int k : party[j])
-            {
-                if(HasNum(k)) 
-                {
-                    break;
-                }
-                else
-                {
-                    count++;
-                    break;
-                }
-            }
-        }
-    
-    }
     cout << count;
-
-
 
     return 0;
 }

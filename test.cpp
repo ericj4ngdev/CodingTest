@@ -1,28 +1,30 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-#define SIZE 100
-int visited[SIZE];
+int visited[100];
 
-void bfs(vector<int>& connect, vector<vector<int>>& graph, int start)
+int bfs(vector<vector<int>>& graph, int start)
 {
+    memset(visited, 0, sizeof(visited));
+    int count = 0;
     queue<int> q;
     q.push(start);
-
-    while (q.size())
+    visited[start] = 1;
+    while(q.size())
     {
         int cur = q.front();
-        
         q.pop();
-        for (int item : graph[cur])
+        for(int i = 0; i < graph[cur].size(); i++)
         {
-            if (visited[item]) continue;
-            visited[item] = 1;
-            // 연결성 표시
-            connect[item] = 1;
-            q.push(item);
+            if(visited[graph[cur][i]] == 1)
+                continue;
+            visited[graph[cur][i]] = 1;
+            count++;
+            // 가벼운 거 체크
+            q.push(graph[cur][i]);
         }
     }
+    return count;
 }
 
 int main()
@@ -31,38 +33,32 @@ int main()
     cin.tie(0);
     cout.tie(0);
 
-    int n;
-    cin >> n;
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> graph_heavy(n+1);
+    vector<vector<int>> graph_light(n+1);
 
-    vector<vector<int>> graph(n + 1);
-
-    for (int i = 0; i < n; i++)
+    for(int i = 0; i < m; i++)
     {
-        for (int j = 0; j < n; j++)
-        {
-            int temp;
-            cin >> temp;
-            // graph[i][j] = temp;
-            if (temp == 1)
-            {
-                graph[i].push_back(j);
-            }
-        }
+        int heavy, light;
+        cin >> heavy >> light;
+        graph_heavy[heavy].push_back(light);
+        graph_light[light].push_back(heavy);
     }
 
-    cout << '\n';
-
-    for (int i = 0; i < n; i++)
+    // 중간이 될 수 없다. = light, heavy 개수 둘 중 하나가 (n-1)/2보다 크다
+    // light, heavy 개수는 어떻게 체크?
+    // bfs
+    int limit = (n-1)/2;
+    int answer = 0;
+    for(int i = 1; i <= n; i++)
     {
-        vector<int> answer(n, 0);
-        memset(visited, 0, sizeof(visited));
-        bfs(answer, graph, i);
-        for (int item : answer)
-        {
-            cout << item << " ";
-        }
-        cout << '\n';
+        int l = bfs(graph_heavy, i);
+        int h = bfs(graph_light, i);
+        if(l > limit || h > limit) answer++;        
     }
+
+    cout << answer;
 
     return 0;
 }
