@@ -1,30 +1,36 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-int visited[100];
+int n, m;
+vector<pair<int,int>> graph[1001];
 
-int bfs(vector<vector<int>>& graph, int start)
+int bfs(int start, int dest)
 {
-    memset(visited, 0, sizeof(visited));
-    int count = 0;
-    queue<int> q;
-    q.push(start);
-    visited[start] = 1;
+    bool visited[1001] = {0,};    
+    queue<pair<int,int>> q;
+    q.push({start,0});
+    visited[start] = true;
     while(q.size())
     {
-        int cur = q.front();
+        int cur = q.front().first;
+        int dist = q.front().second;
         q.pop();
-        for(int i = 0; i < graph[cur].size(); i++)
+        // 도착시 반환
+        if(cur == dest)
         {
-            if(visited[graph[cur][i]] == 1)
-                continue;
-            visited[graph[cur][i]] = 1;
-            count++;
-            // 가벼운 거 체크
-            q.push(graph[cur][i]);
+            return dist;
+        }
+        // cur와 인접한 노드 순회
+        for(auto [nxt, nxtDist] : graph[cur])
+        {
+            if(visited[nxt]) continue;
+            visited[nxt] = true;
+            // 1과 연결된 2, 4 에 dist가 다 더해짐
+            // 지금까지 거리 킵
+            q.push({nxt, dist + nxtDist});
         }
     }
-    return count;
+    return -1;
 }
 
 int main()
@@ -33,32 +39,23 @@ int main()
     cin.tie(0);
     cout.tie(0);
 
-    int n, m;
     cin >> n >> m;
-    vector<vector<int>> graph_heavy(n+1);
-    vector<vector<int>> graph_light(n+1);
-
-    for(int i = 0; i < m; i++)
+    for(int i = 0; i < n - 1; i++)
     {
-        int heavy, light;
-        cin >> heavy >> light;
-        graph_heavy[heavy].push_back(light);
-        graph_light[light].push_back(heavy);
+        int u, v, dist;
+        cin >> u >> v >> dist;
+        graph[u].push_back({v,dist});
+        graph[v].push_back({u,dist});
     }
 
-    // 중간이 될 수 없다. = light, heavy 개수 둘 중 하나가 (n-1)/2보다 크다
-    // light, heavy 개수는 어떻게 체크?
-    // bfs
-    int limit = (n-1)/2;
-    int answer = 0;
-    for(int i = 1; i <= n; i++)
+    for(int i = 0; i < m; ++i)
     {
-        int l = bfs(graph_heavy, i);
-        int h = bfs(graph_light, i);
-        if(l > limit || h > limit) answer++;        
+        int u, v; cin >> u >> v;
+        // 거리 출력
+        int distance = bfs(u,v);
+        cout << distance << '\n';
     }
-
-    cout << answer;
+    
 
     return 0;
 }
